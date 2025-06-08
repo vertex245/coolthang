@@ -21,13 +21,10 @@ app.get('/verify/:username', async (req, res) => {
     }
 
     try {
-        const response = await fetch(`https://voxiom.io/player/${encodeURIComponent(username)}`);
-        const text = await response.text();
+        const response = await fetch(`https://api.tricko.pro/voxiom/player/${encodeURIComponent(username)}?log=urdad`);
+        const data = await response.json();
 
-        // Check if the response contains the "Failed to load player data" error
-        if (text.includes('Failed to load player data')) {
-            return res.status(404).json({ error: 'Invalid username' });
-        } else {
+        if (data.data && data.data.nickname === username) {
             // Username is valid, send to webhook
             try {
                 const webhookResponse = await fetch(WEBHOOK_URL, {
@@ -45,6 +42,8 @@ app.get('/verify/:username', async (req, res) => {
                 console.error('Webhook error:', webhookError);
                 return res.status(500).json({ error: 'Webhook request failed' });
             }
+        } else {
+            return res.status(404).json({ error: 'Invalid username' });
         }
     } catch (error) {
         console.error('API error:', error);
