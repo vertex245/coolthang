@@ -1,5 +1,4 @@
 const express = require('express');
-const fetch = require('node-fetch');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -14,14 +13,14 @@ if (!WEBHOOK_URL) {
 
 // API endpoint: /verify/:username
 app.get('/verify/:username', async (req, res) => {
-    const username = req.params.username.toLowerCase(); // Normalize to lowercase for case-insensitive comparison
+    const username = req.params.username.toLowerCase();
 
     if (!username) {
         return res.status(400).json({ error: 'Username is required' });
     }
 
     try {
-        // Fetch data from the new API endpoint with POST method
+        // Use native fetch API
         const response = await fetch(`https://voxiom.io/profile/player/${encodeURIComponent(username)}`, {
             method: 'POST'
         });
