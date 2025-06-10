@@ -39,10 +39,14 @@ app.get('/verify/:username', async (req, res) => {
                     body: JSON.stringify({ username })
                 });
 
+                console.log('Webhook Response Status:', webhookResponse.status);
+                console.log('Webhook Response Headers:', webhookResponse.headers.raw());
+                console.log('Webhook Response Text:', await webhookResponse.text());
+
                 if (webhookResponse.ok) {
                     return res.status(200).json({ message: `Username "${username}" is valid and sent to webhook` });
                 } else {
-                    return res.status(500).json({ error: 'Failed to send to webhook' });
+                    return res.status(500).json({ error: `Failed to send to webhook. Status: ${webhookResponse.status}` });
                 }
             } catch (webhookError) {
                 console.error('Webhook error:', webhookError);
@@ -60,3 +64,4 @@ app.get('/verify/:username', async (req, res) => {
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
+
