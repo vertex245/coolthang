@@ -21,10 +21,15 @@ app.get('/verify/:username', async (req, res) => {
     }
 
     try {
-        const response = await fetch(`https://api.tricko.pro/voxiom/player/${encodeURIComponent(username)}?log=urdad`);
+        // Fetch data from the new API endpoint with POST method
+        const response = await fetch(`https://voxiom.io/profile/player/${encodeURIComponent(username)}`, {
+            method: 'POST'
+        });
         const data = await response.json();
 
-        if (data.data && data.data.nickname === username) {
+        // Assuming the API returns a structure where username can be validated
+        // Adjust the condition based on the actual API response structure
+        if (data && data.nickname === username) { // Placeholder condition; adjust as per API response
             // Username is valid, send to webhook
             try {
                 const webhookResponse = await fetch(WEBHOOK_URL, {
