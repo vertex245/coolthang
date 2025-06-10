@@ -14,7 +14,7 @@ if (!WEBHOOK_URL) {
 
 // API endpoint: /verify/:username
 app.get('/verify/:username', async (req, res) => {
-    const username = req.params.username;
+    const username = req.params.username.toLowerCase(); // Normalize to lowercase for case-insensitive comparison
 
     if (!username) {
         return res.status(400).json({ error: 'Username is required' });
@@ -30,8 +30,8 @@ app.get('/verify/:username', async (req, res) => {
         // Log the raw data for debugging (remove in production)
         console.log('API Response:', data);
 
-        // Validate username based on API response (adjust field name as needed)
-        if (data && data.nickname === username) { // Placeholder; adjust based on actual field
+        // Validate username (case-insensitive comparison with nickname)
+        if (data && data.success && data.data && data.data.nickname.toLowerCase() === username) {
             // Username is valid, send to webhook
             try {
                 const webhookResponse = await fetch(WEBHOOK_URL, {
