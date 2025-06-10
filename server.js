@@ -27,9 +27,11 @@ app.get('/verify/:username', async (req, res) => {
         });
         const data = await response.json();
 
-        // Assuming the API returns a structure where username can be validated
-        // Adjust the condition based on the actual API response structure
-        if (data && data.nickname === username) { // Placeholder condition; adjust as per API response
+        // Log the raw data for debugging (remove in production)
+        console.log('API Response:', data);
+
+        // Validate username based on API response (adjust field name as needed)
+        if (data && data.nickname === username) { // Placeholder; adjust based on actual field
             // Username is valid, send to webhook
             try {
                 const webhookResponse = await fetch(WEBHOOK_URL, {
